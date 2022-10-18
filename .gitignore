@@ -1,4 +1,10 @@
+.txt
+.docx
+.Rds
+.jpeg
+.zip
+.pdf
+.png
+.xls
+data/
 .Rproj.user
-.Rhistory
-.RData
-.Ruserdata
