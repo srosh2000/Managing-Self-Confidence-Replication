@@ -1,0 +1,16 @@
+% hacktex(table.gmm, file = paste(tabdir, "application.tex", sep = "/"),      table.env = FALSE, caption.loc = "top", center = "none",      rowname = NULL, colheads = c("", "OLS", "First Stage", "IV",          "Reduced Form", "Over-controlled"), collabel.just = c("l",          "c", "c", "c", "c", "c")) 
+%
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llllll}\hline\hline
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{OLS}&\multicolumn{1}{c}{First Stage}&\multicolumn{1}{c}{IV}&\multicolumn{1}{c}{Reduced Form}&\multicolumn{1}{c}{Over-controlled}\tabularnewline
+\hline
+Confidence (Experiment 2)&0.010&&0.024&&0.009\tabularnewline
+&{\scriptsize (0.002)$^{***}$}&&{\scriptsize (0.010)$^{**}$}&&{\scriptsize (0.002)$^{***}$}\tabularnewline
+Feedback (Experiment 1)&&5.159&&0.125&0.077\tabularnewline
+&&{\scriptsize (2.122)$^{**}$}&&{\scriptsize (0.053)$^{**}$}&{\scriptsize (0.053)$^{}$}\tabularnewline
+Ability (Experiment 1)&0.222&-9.488&0.226&-0.004&0.084\tabularnewline
+&{\scriptsize (0.089)$^{**}$}&{\scriptsize (5.397)$^{*}$}&{\scriptsize (0.091)$^{**}$}&{\scriptsize (0.139)$^{}$}&{\scriptsize (0.131)$^{}$}\tabularnewline
+N&102&102&102&102&102\tabularnewline
+$R^2$&0.221&0.056&-&0.104&0.240\tabularnewline
+\hline
+\end{tabular*}
+

@@ -227,6 +227,58 @@ points(respdata$task2estimatedwin[respdata$conservative==1], respdata$task2preco
 points(respdata$task2estimatedwin[respdata$conservative==0], respdata$task2preconfidence[respdata$conservative==0]/100, pch=16, col=grey(0.3))
 dev.off()
 
+###---GENDER ANALYSIS---###
+### Table 6: How confidence affects competition for male vs female      
+
+# male regressions
+attach(mdata)  
+fm.firststage.male <- lm(task2preconfidence ~ signalsum + temptophalf)
+fm.firststage.male$var <- hccm(fm.firststage.male)
+fm.redform.male <- lm(task2tournament ~ signalsum + temptophalf)
+fm.redform.male$var <- hccm(fm.redform.male)
+fm.gmm.male <- gmm(task2tournament ~ task2preconfidence + temptophalf, cbind(signalsum, temptophalf))
+detach(mdata)
+
+# female regressions
+attach(fdata)
+fm.firststage.fem <- lm(task2preconfidence ~ signalsum + temptophalf)
+fm.firststage.fem$var <- hccm(fm.firststage.fem)
+fm.redform.fem <- lm(task2tournament ~ signalsum + temptophalf)
+fm.redform.fem$var <- hccm(fm.redform.fem)
+fm.gmm.fem <- gmm(task2tournament ~ task2preconfidence + temptophalf, cbind(signalsum, temptophalf))
+detach(fdata)
+
+# output
+vars.gmm.gender <- c("task2preconfidence","signalsum","temptophalf")
+table.gmm.gender <- multiregtable(vars.gmm.gender, varlabels, list(fm.firststage.fem, 
+                                                                               fm.firststage.male, 
+                                                                               fm.redform.fem,
+                                                                               fm.redform.male,
+                                                                               fm.gmm.fem,
+                                                                               fm.gmm.male), 3)
+result <- hacktex(table.gmm.gender, 
+                  file=paste(tabdir, "application_gender.tex", sep="/"),
+                  table.env=FALSE,
+                  caption.loc="top",
+                  center="none",
+                  rowname =NULL,
+                  cgroup=c("","First Stage","Reduced Form","IV"),
+                  n.cgroup=c(1,2,2,2),
+                  colheads=c("","Female","Male","Female","Male","Female","Male"),
+                  collabel.just=c("l","c","c","c","c","c","c"))
+
+### Figure : Men or women have less accurate beliefs?
+postscript(file=paste(figdir, "task2estimatedwin_preconfidence_gender_exp2.eps", sep=""), onefile=FALSE, horizontal=FALSE, width=7, height=7)
+par(mar=c(5.1, 4.1, 1.1, 2.1))
+fm.male <- lm(task2preconfidence ~ task2estimatedwin, data=respdata[respdata$male==1,])
+fm.fem <- lm(task2preconfidence ~ task2estimatedwin, data=respdata[respdata$male==0,])
+fv.male <- predict(fm.male, newdata=data.frame(task2estimatedwin=seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1)))/100
+fv.fem <- predict(fm.fem, newdata=data.frame(task2estimatedwin=seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1)))/100
+plot(seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1), fv.male, type="l", lwd=2, ylim=c(0,1), col=grey(0.8), xlab="Predicted winning probability", ylab="Confidence") 
+lines(seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1), fv.fem, lwd=2, col=grey(0.3))
+points(respdata$task2estimatedwin[respdata$male==1], respdata$task2preconfidence[respdata$male==1]/100, pch=16, col=grey(0.8))
+points(respdata$task2estimatedwin[respdata$male==0], respdata$task2preconfidence[respdata$male==0]/100, pch=16, col=grey(0.3))
+dev.off()
 
 
 

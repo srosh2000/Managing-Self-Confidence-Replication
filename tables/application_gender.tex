@@ -1,0 +1,24 @@
+% hacktex(table.gmm.gender, file = paste(tabdir, "application_gender.tex",      sep = "/"), table.env = FALSE, caption.loc = "top", center = "none",      rowname = NULL, cgroup = c("", "First Stage", "Reduced Form",          "IV"), n.cgroup = c(1, 2, 2, 2), colheads = c("", "Female",          "Male", "Female", "Male", "Female", "Male"), collabel.just = c("l",          "c", "c", "c", "c", "c", "c")) 
+%
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcllcllcll}\hline\hline
+\multicolumn{1}{c}{\bfseries }&
+\multicolumn{1}{c}{\bfseries }&
+\multicolumn{2}{c}{\bfseries First Stage}&
+\multicolumn{1}{c}{\bfseries }&
+\multicolumn{2}{c}{\bfseries Reduced Form}&
+\multicolumn{1}{c}{\bfseries }&
+\multicolumn{2}{c}{\bfseries IV}
+\tabularnewline \cline{1-10}
+\multicolumn{1}{l}{}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Female}&\multicolumn{1}{c}{Male}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Female}&\multicolumn{1}{c}{Male}&\multicolumn{1}{c}{}&\multicolumn{1}{c}{Female}&\multicolumn{1}{c}{Male}\tabularnewline
+\hline
+Confidence (Experiment 2)&&&&&&&&0.023&0.022\tabularnewline
+&&&&&&&&{\scriptsize (0.022)$^{}$}&{\scriptsize (0.009)$^{**}$}\tabularnewline
+Feedback (Experiment 1)&&2.473&8.143&&0.057&0.179&&&\tabularnewline
+&&{\scriptsize (2.623)$^{}$}&{\scriptsize (3.241)$^{**}$}&&{\scriptsize (0.081)$^{}$}&{\scriptsize (0.073)$^{**}$}&&&\tabularnewline
+Ability (Experiment 1)&&-11.343&-6.020&&0.063&-0.096&&0.323&0.036\tabularnewline
+&&{\scriptsize (6.253)$^{*}$}&{\scriptsize (9.671)$^{}$}&&{\scriptsize (0.206)$^{}$}&{\scriptsize (0.196)$^{}$}&&{\scriptsize (0.201)$^{}$}&{\scriptsize (0.170)$^{}$}\tabularnewline
+N&&56&46&&56&46&&56&46\tabularnewline
+$R^2$&&0.059&0.135&&0.040&0.161&&-&-\tabularnewline
+\hline
+\end{tabular*}
+
