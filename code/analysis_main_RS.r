@@ -156,6 +156,49 @@ fm.ar$var <- clx(fm.ar, 1, regdata$subjectid[regdata$restrict2==1])
 fm.ar.ur <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds, data=regdata)
 fm.ar.ur$var <- clx(fm.ar.ur, 1, regdata$subjectid)
 
+### my trial 
+# Round-by-round plus pooled regressions
+fm.r1 <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds + lpreodds_male + llr1_male + llr0_male, data=regdata[regdata$round==1 & regdata$restrict2==1,])
+fm.r1$var <- hccm(fm.r1)
+fm.r2 <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds+ lpreodds_male + llr1_male + llr0_male, data=regdata[regdata$round==2 & regdata$restrict2==1,])
+fm.r2$var <- hccm(fm.r2)
+fm.r3 <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds+ lpreodds_male + llr1_male + llr0_male, data=regdata[regdata$round==3 & regdata$restrict2==1,])
+fm.r3$var <- hccm(fm.r3)
+fm.r4 <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds+ lpreodds_male + llr1_male + llr0_male, data=regdata[regdata$round==4 & regdata$restrict2==1,])
+fm.r4$var <- hccm(fm.r4)
+fm.ar <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds+ lpreodds_male + llr1_male + llr0_male, data=regdata[regdata$restrict2==1,])
+fm.ar$var <- clx(fm.ar, 1, regdata$subjectid[regdata$restrict2==1])
+fm.ar.ur <- lm(lpostodds ~ 0 + llr1 + llr0 + lpreodds, data=regdata)
+fm.ar.ur$var <- clx(fm.ar.ur, 1, regdata$subjectid)
+
+# add tests for responsiveness and symmetry (with gender) 
+baseaddrows <- matrix(NA, nrow=3, ncol=7)
+baseaddrows[,1] <- c("$\\mathbb{P}(\\beta_H^male = 1)$","$\\mathbb{P}(\\beta_L^male = 1)$","$\\mathbb{P}(\\beta_H^male = \\beta_L^male)$")
+baseaddrows[1,2] <- roundsig(linearHypothesis(fm.r1, c(1,0,0), vcov=fm.r1$var)["Pr(>F)"][[4]][5],6)
+baseaddrows[1,3] <- roundsig(linearHypothesis(fm.r2, c(1,0,0), vcov=fm.r2$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[1,4] <- roundsig(linearHypothesis(fm.r3, c(1,0,0), vcov=fm.r3$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[1,5] <- roundsig(linearHypothesis(fm.r4, c(1,0,0), vcov=fm.r4$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[1,6] <- roundsig(linearHypothesis(fm.ar, c(1,0,0), vcov=fm.ar$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[1,7] <- roundsig(linearHypothesis(fm.ar.ur, c(1,0,0), vcov=fm.ar.ur$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[2,2] <- roundsig(linearHypothesis(fm.r1, c(0,1,0), vcov=fm.r1$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[2,3] <- roundsig(linearHypothesis(fm.r2, c(0,1,0), vcov=fm.r2$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[2,4] <- roundsig(linearHypothesis(fm.r3, c(0,1,0), vcov=fm.r3$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[2,5] <- roundsig(linearHypothesis(fm.r4, c(0,1,0), vcov=fm.r4$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[2,6] <- roundsig(linearHypothesis(fm.ar, c(0,1,0), vcov=fm.ar$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[2,7] <- roundsig(linearHypothesis(fm.ar.ur, c(0,1,0), vcov=fm.ar.ur$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[3,2] <- roundsig(linearHypothesis(fm.r1, c(1,-1,0), vcov=fm.r1$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[3,3] <- roundsig(linearHypothesis(fm.r2, c(1,-1,0), vcov=fm.r2$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[3,4] <- roundsig(linearHypothesis(fm.r3, c(1,-1,0), vcov=fm.r3$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[3,5] <- roundsig(linearHypothesis(fm.r4, c(1,-1,0), vcov=fm.r4$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[3,6] <- roundsig(linearHypothesis(fm.ar, c(1,-1,0), vcov=fm.ar$var)["Pr(>F)"][[1]][2],3)
+baseaddrows[3,7] <- roundsig(linearHypothesis(fm.ar.ur, c(1,-1,0), vcov=fm.ar.ur$var)["Pr(>F)"][[1]][2],3)
+
+vars.base <- c("lpreodds","llr1","llr0")
+table.base <- multiregtable(vars.base, varlabels, list(fm.r1,fm.r2,fm.r3,fm.r4,fm.ar,fm.ar.ur), 3, addrows=baseaddrows)
+
+
+----###
+
 # add tests for responsiveness and symmetry
 baseaddrows <- matrix(NA, nrow=3, ncol=7)
 baseaddrows[,1] <- c("$\\mathbb{P}(\\beta_H = 1)$","$\\mathbb{P}(\\beta_L = 1)$","$\\mathbb{P}(\\beta_H = \\beta_L)$")
@@ -258,6 +301,66 @@ result <- hacktex(rbind(table.base, table.gmm),
                   colheads=c("Regressor","Round 1","Round 2","Round 3","Round 4","All Rounds","Unrestricted"),
                   collabel.just=c("l","c","c","c","c","c","c"))
 
+####----GENDER ANALYSIS----####
+# Heterogeneity in updating by gender
+# OLS
+fm.g.r2 <- lm(lpostodds ~ 0 + llr1 + llr1_male + llr0 + llr0_male + lpreodds + lpreodds_male, data=regdata[regdata$restrict2==1,])
+fm.g.r2$var <- clx(fm.g.r2, 1, regdata$subjectid[regdata$restrict2==1])
+
+stargazer(fm.g.r2, type = "text")
+# OLS with delta = 1 imposed
+fm.g.r2 <- lm(lpostodds - lpreodds ~ 0 + llr1 + llr1_male + llr0 + llr0_male, data=regdata[regdata$restrict2==1,])
+fm.g.r2$var <- clx(fm.g.r2, 1, regdata$subjectid[regdata$restrict2==1])
+
+# create variables and interacted instruments
+lpostodds <- regdata$lpostodds[regdata$restrict2==1]
+llr1 <- regdata$llr1[regdata$restrict2==1]
+llr0 <- regdata$llr0[regdata$restrict2==1]
+lpreodds <- regdata$lpreodds[regdata$restrict2==1]
+oms <- regdata$othermeanscore[regdata$restrict2==1]
+lpreodds_male <- regdata$lpreodds_male[regdata$restrict2==1]
+llr1_male <- regdata$llr1_male[regdata$restrict2==1]
+llr0_male <- regdata$llr0_male[regdata$restrict2==1]
+regdata$oms_male <- regdata$othermeanscore * regdata$male
+oms_male <- regdata$oms_male[regdata$restrict2==1]
 
 
+# create variables and interacted instruments
+lpostodds <- regdata$lpostodds[regdata$restrict2==1]
+llr1 <- regdata$llr1[regdata$restrict2==1]
+llr0 <- regdata$llr0[regdata$restrict2==1]
+lpreodds <- regdata$lpreodds[regdata$restrict2==1]
+oms <- regdata$othermeanscore[regdata$restrict2==1]
+lpreodds_male <- regdata$lpreodds_male[regdata$restrict2==1]
+llr1_male <- regdata$llr1_male[regdata$restrict2==1]
+llr0_male <- regdata$llr0_male[regdata$restrict2==1]
+regdata$oms_male <- regdata$othermeanscore * regdata$male
+oms_male <- regdata$oms_male[regdata$restrict2==1]
+
+# estimation
+gmm.g.r2 <- gmm(lpostodds ~ 0 + llr1 + llr0 + llr1_male + llr0_male + lpreodds + lpreodds_male, cbind(llr1,llr0,llr1_male,llr0_male,oms,oms_male))
+
+# create the differential regression table
+varlabels <- pairlist("lpostodds"           = "Log Posterior Odds",
+                      "llr1"                = "$\\beta_H$",
+                      "llr0"                = "$\\beta_L$",
+                      "llr1_male"           = "$\\beta_H^{Male}$",
+                      "llr0_male"           = "$\\beta_L^{Male}$",
+                      "lpreodds"            = "$\\delta$",
+                      "lpreodds_male"       = "$\\delta^{Male}$")
+
+vars.gender <- c("llr1","llr0","llr1_male","llr0_male")
+
+table.gender <- multiregtable(vars.gender, varlabels, list(fm.g.r2), 3)
+
+result <- hacktex(table.gender, 
+                  file=paste(tabdir, "differential_gender.tex", sep="/"),
+                  label="tab:differential_gender",
+                  tabwidth="3in",
+                  table.env=FALSE,
+                  caption.loc="top",
+                  rowname =NULL,
+                  center="none",
+                  colheads=c("Regressor","OLS"),
+                  collabel.just=c("l","c"))
 
