@@ -1,7 +1,7 @@
 #################################################################################################
 #
 #   analysis_competition_RS.r
-#   July 2021
+#   October 2022
 #
 #################################################################################################
 
@@ -143,92 +143,9 @@ varlabels <- pairlist("task2preconfidence" = "Confidence (Experiment 2)",
                       "task2preconfidence_lc" = "Confidence (Experiment 2) * LC",
                       "task2preconfidence_male" = "Confidence (Experiment 2) * Male")
 
-### Table 5: confidence and competition
-
-# IV estimates of confidence on competition are around double the OLS
-fm.olssimple <- lm(task2tournament ~ temptophalf, data=data)
-fm.olssimple$var <- hccm(fm.olssimple)
-fm.ols <- lm(task2tournament ~ task2preconfidence + temptophalf, data=data)
-fm.ols$var <- hccm(fm.ols)
-fm.firststage <- lm(task2preconfidence ~ signalsum + temptophalf, data=data)
-fm.firststage$var <- hccm(fm.firststage)
-fm.reducedform <- lm(task2tournament ~ signalsum + temptophalf, data=data)
-fm.reducedform$var <- hccm(fm.reducedform)
-fm.overcontrolled <- lm(task2tournament ~ task2preconfidence + signalsum + temptophalf, data=data)
-fm.overcontrolled$var <- hccm(fm.overcontrolled)
-attach(data)
-fm.gmm <- gmm(task2tournament ~ task2preconfidence + temptophalf, cbind(signalsum, temptophalf))
-detach(data)
-
-
-# output
-vars.gmm <- c("task2preconfidence","signalsum","temptophalf")
-table.gmm <- multiregtable(vars.gmm, varlabels, list(fm.ols, fm.firststage, fm.gmm, fm.reducedform, fm.overcontrolled), 3)
-result <- hacktex(table.gmm, 
-                  file=paste(tabdir, "application.tex", sep="/"),
-                  table.env=FALSE,
-                  caption.loc="top",
-                  center="none",
-                  rowname =NULL,
-                  colheads=c("","OLS","First Stage","IV","Reduced Form","Over-controlled"),
-                  collabel.just=c("l","c","c","c","c","c"))
-
-### Table 6: confidence affects competition similarly for more/less conservative types       
-
-# mc regressions
-attach(respdata[respdata$conservative==1,])  
-fm.firststage.mc <- lm(task2preconfidence ~ signalsum + temptophalf)
-fm.firststage.mc$var <- hccm(fm.firststage.mc)
-fm.redform.mc <- lm(task2tournament ~ signalsum + temptophalf)
-fm.redform.mc$var <- hccm(fm.redform.mc)
-fm.gmm.mc <- gmm(task2tournament ~ task2preconfidence + temptophalf, cbind(signalsum, temptophalf))
-detach(respdata[respdata$conservative==1,])
-
-# lc regressions
-attach(respdata[respdata$conservative==0,])
-fm.firststage.lc <- lm(task2preconfidence ~ signalsum + temptophalf)
-fm.firststage.lc$var <- hccm(fm.firststage.lc)
-fm.redform.lc <- lm(task2tournament ~ signalsum + temptophalf)
-fm.redform.lc$var <- hccm(fm.redform.lc)
-fm.gmm.lc <- gmm(task2tournament ~ task2preconfidence + temptophalf, cbind(signalsum, temptophalf))
-detach(respdata[respdata$conservative==0,])
-
-# output
-vars.gmm.conservative <- c("task2preconfidence","signalsum","temptophalf")
-table.gmm.conservative <- multiregtable(vars.gmm.conservative, varlabels, list(fm.firststage.lc, 
-                                                                               fm.firststage.mc, 
-                                                                               fm.redform.lc,
-                                                                               fm.redform.mc,
-                                                                               fm.gmm.lc,
-                                                                               fm.gmm.mc), 3)
-result <- hacktex(table.gmm.conservative, 
-                  file=paste(tabdir, "application_conservative.tex", sep="/"),
-                  table.env=FALSE,
-                  caption.loc="top",
-                  center="none",
-                  rowname =NULL,
-                  cgroup=c("","First Stage","Reduced Form","IV"),
-                  n.cgroup=c(1,2,2,2),
-                  colheads=c("","LC","MC","LC","MC","LC","MC"),
-                  collabel.just=c("l","c","c","c","c","c","c"))
-
-### Figure 5: more conservative updaters have less accurate beliefs
-
-# More conservative updaters have less accurate beliefs
-postscript(file=paste(figdir, "task2estimatedwin_preconfidence_conservatism_exp2.eps", sep=""), onefile=FALSE, horizontal=FALSE, width=7, height=7)
-par(mar=c(5.1, 4.1, 1.1, 2.1))
-fm.mc <- lm(task2preconfidence ~ task2estimatedwin, data=respdata[respdata$conservative==1,])
-fm.lc <- lm(task2preconfidence ~ task2estimatedwin, data=respdata[respdata$conservative==0,])
-fv.mc <- predict(fm.mc, newdata=data.frame(task2estimatedwin=seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1)))/100
-fv.lc <- predict(fm.lc, newdata=data.frame(task2estimatedwin=seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1)))/100
-plot(seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1), fv.mc, type="l", lwd=2, ylim=c(0,1), col=grey(0.8), xlab="Predicted winning probability", ylab="Confidence") 
-lines(seq(min(respdata$task2estimatedwin), max(respdata$task2estimatedwin),1), fv.lc, lwd=2, col=grey(0.3))
-points(respdata$task2estimatedwin[respdata$conservative==1], respdata$task2preconfidence[respdata$conservative==1]/100, pch=16, col=grey(0.8))
-points(respdata$task2estimatedwin[respdata$conservative==0], respdata$task2preconfidence[respdata$conservative==0]/100, pch=16, col=grey(0.3))
-dev.off()
 
 ###---GENDER ANALYSIS---###
-### Table 6: How confidence affects competition for male vs female      
+### Table 3: How confidence affects competition for male vs female      
 
 # male regressions
 attach(mdata)  
@@ -267,7 +184,7 @@ result <- hacktex(table.gmm.gender,
                   colheads=c("","Female","Male","Female","Male","Female","Male"),
                   collabel.just=c("l","c","c","c","c","c","c"))
 
-### Figure : Men or women have less accurate beliefs?
+### Figure 1: Men or women have less accurate beliefs?
 postscript(file=paste(figdir, "task2estimatedwin_preconfidence_gender_exp2.eps", sep=""), onefile=FALSE, horizontal=FALSE, width=7, height=7)
 par(mar=c(5.1, 4.1, 1.1, 2.1))
 fm.male <- lm(task2preconfidence ~ task2estimatedwin, data=respdata[respdata$male==1,])

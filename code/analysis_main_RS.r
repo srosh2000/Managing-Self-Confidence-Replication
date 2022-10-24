@@ -1,7 +1,7 @@
 #################################################################################################
 #
 #   analysis_main_RS.r
-#   Oct 2022
+#   October 2022
 #
 #################################################################################################
 
@@ -312,6 +312,7 @@ vars.gender <- c("llr1","llr0","llr1_male","llr0_male")
 
 table.gender <- multiregtable(vars.gender, varlabels, list(fm.g.r2), 3)
 
+# Table 2: Gender heterogeneity in beleif updating
 result <- hacktex(table.gender, 
                   file=paste(tabdir, "differential_gender.tex", sep="/"),
                   label="tab:differential_gender",
