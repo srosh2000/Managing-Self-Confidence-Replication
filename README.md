@@ -16,7 +16,7 @@ experimental instructions is also provided
 eligibility, recruitment and demographics is available in the main
 paper itself (Section 3).
 
-Results are produced from these datasets using three scripts:
+Results are produced from these datasets using two scripts:
 
     /code/analysis_main_RS.r           Produces the bulk of the results in the paper.
     /code/analysis_competition_RS.r    Produces some additional results that appear in the section  on competitive behavior.
